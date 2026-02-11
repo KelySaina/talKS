@@ -318,6 +318,36 @@ async function handleMarkRead(io, socket, data) {
   }
 }
 
+async function handleMarkAllRead(io, socket, data) {
+  try {
+    const { senderId } = data;
+    const userId = socket.user.id;
+
+    const connection = await pool.getConnection();
+    try {
+      await connection.query(
+        'UPDATE messages SET is_read = TRUE, read_at = NOW() WHERE sender_id = ? AND recipient_id = ? AND is_direct = TRUE AND is_read = FALSE',
+        [senderId, userId]
+      );
+
+      // Notify sender that all their messages were read
+      const senderSockets = activeUsers.get(senderId);
+      if (senderSockets) {
+        senderSockets.forEach(socketId => {
+          io.to(socketId).emit('messages_read', {
+            readBy: userId,
+            readAt: new Date()
+          });
+        });
+      }
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error('Mark all read error:', error);
+  }
+}
+
 module.exports = {
   handleConnection,
   handleDisconnect,
@@ -326,5 +356,6 @@ module.exports = {
   handleSendMessage,
   handleTypingStart,
   handleTypingStop,
-  handleMarkRead
+  handleMarkRead,
+  handleMarkAllRead
 };

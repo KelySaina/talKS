@@ -1,6 +1,6 @@
 import './UserList.css';
 
-function UserList({ users, onlineUsers, onUserSelect, activeDM }) {
+function UserList({ users, onlineUsers, onUserSelect, activeDM, unreadCounts = {} }) {
   const sortedUsers = [...users].sort((a, b) => {
     // Online users first
     const aOnline = onlineUsers.includes(a.id) || a.is_online;
@@ -25,6 +25,7 @@ function UserList({ users, onlineUsers, onUserSelect, activeDM }) {
         {sortedUsers.map(user => {
           const isOnline = onlineUsers.includes(user.id) || user.is_online;
           const isActive = activeDM?.id === user.id;
+          const unreadCount = unreadCounts[user.id] || 0;
 
           return (
             <button
@@ -50,6 +51,9 @@ function UserList({ users, onlineUsers, onUserSelect, activeDM }) {
                   {isOnline ? 'Online' : 'Offline'}
                 </div>
               </div>
+              {unreadCount > 0 && (
+                <span className="unread-badge">{unreadCount}</span>
+              )}
             </button>
           );
         })}

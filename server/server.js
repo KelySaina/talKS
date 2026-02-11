@@ -78,6 +78,7 @@ io.on('connection', (socket) => {
   socket.on('typing_start', (data) => socketHandlers.handleTypingStart(io, socket, data));
   socket.on('typing_stop', (data) => socketHandlers.handleTypingStop(io, socket, data));
   socket.on('mark_read', (data) => socketHandlers.handleMarkRead(io, socket, data));
+  socket.on('mark_all_read', (data) => socketHandlers.handleMarkAllRead(io, socket, data));
 });
 
 // Error handling

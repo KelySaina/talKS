@@ -30,7 +30,8 @@ export const messagesAPI = {
   getChannelMessages: (channelId, params) =>
     api.get(`/api/messages/channel/${channelId}`, { params }),
   getDirectMessages: (userId, params) =>
-    api.get(`/api/messages/direct/${userId}`, { params })
+    api.get(`/api/messages/direct/${userId}`, { params }),
+  getUnreadCounts: () => api.get('/api/messages/unread-counts')
 };
 
 // Users API

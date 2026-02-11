@@ -1,10 +1,11 @@
 const express = require('express');
 const pool = require('../config/database');
 const { decrypt } = require('../utils/encryption');
+const { authenticate } = require('../middleware/auth');
 const router = express.Router();
 
 // Get channel messages
-router.get('/channel/:channelId', async (req, res) => {
+router.get('/channel/:channelId', authenticate, async (req, res) => {
   try {
     const { channelId } = req.params;
     const { limit = 50, before } = req.query;
@@ -45,22 +46,42 @@ router.get('/channel/:channelId', async (req, res) => {
   }
 });
 
+// Get unread message counts for all users
+router.get('/unread-counts', authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const connection = await pool.getConnection();
+    try {
+      const [counts] = await connection.query(
+        `SELECT sender_id, COUNT(*) as count
+         FROM messages
+         WHERE recipient_id = ? AND is_direct = TRUE AND is_read = FALSE
+         GROUP BY sender_id`,
+        [userId]
+      );
+
+      const unreadCounts = {};
+      counts.forEach(row => {
+        unreadCounts[row.sender_id] = row.count;
+      });
+
+      res.json(unreadCounts);
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error('Get unread counts error:', error);
+    res.status(500).json({ error: 'Failed to fetch unread counts' });
+  }
+});
+
 // Get direct messages with a user
-router.get('/direct/:userId', async (req, res) => {
+router.get('/direct/:userId', authenticate, async (req, res) => {
   try {
     const { userId } = req.params;
     const { limit = 50, before } = req.query;
-
-    // We'd need to get current user from token, using cookie for now
-    // In production, add proper auth middleware
-    const accessToken = req.cookies.access_token;
-    if (!accessToken) {
-      return res.status(401).json({ error: 'Not authenticated' });
-    }
-
-    // For simplicity, we'll skip detailed auth here
-    // In production, decode and verify the access token
-    const currentUserId = req.query.currentUserId; // Pass as query param for now
+    const currentUserId = req.user.id;
 
     const connection = await pool.getConnection();
     try {

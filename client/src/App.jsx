@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import { authAPI, channelsAPI, usersAPI } from './api';
+import { authAPI, channelsAPI, usersAPI, messagesAPI } from './api';
 import Login from './components/Login';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
@@ -20,6 +20,7 @@ function App() {
   const [activeDM, setActiveDM] = useState(null);
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState({});
+  const [unreadCounts, setUnreadCounts] = useState({});
 
   // Check authentication
   useEffect(() => {
@@ -43,7 +44,6 @@ function App() {
       });
 
       newSocket.on('message', (message) => {
-        console.log('📨 Message received:', message);
         // Always add message to state, let React re-render decide if it's visible
         setMessages(prev => {
           // Check if message already exists (dedupe)
@@ -52,6 +52,17 @@ function App() {
           }
           return [...prev, message];
         });
+
+        // Update unread count if it's a DM from someone else and not currently viewing their chat
+        if (message.is_direct && message.sender_id !== user?.id) {
+          const isCurrentChat = activeDM?.id === message.sender_id;
+          if (!isCurrentChat) {
+            setUnreadCounts(prev => ({
+              ...prev,
+              [message.sender_id]: (prev[message.sender_id] || 0) + 1
+            }));
+          }
+        }
       });
 
       newSocket.on('user_online', async ({ userId, username }) => {
@@ -125,6 +136,7 @@ function App() {
     if (user) {
       loadChannels();
       loadUsers();
+      loadUnreadCounts();
     }
   }, [user]);
 
@@ -164,6 +176,15 @@ function App() {
       setUsers(data);
     } catch (error) {
       console.error('Failed to load users:', error);
+    }
+  };
+
+  const loadUnreadCounts = async () => {
+    try {
+      const { data } = await messagesAPI.getUnreadCounts();
+      setUnreadCounts(data);
+    } catch (error) {
+      console.error('Failed to load unread counts:', error);
     }
   };
 
@@ -215,6 +236,18 @@ function App() {
   };
 
   const handleUserSelect = (selectedUser) => {
+    // Clear unread count for this user
+    setUnreadCounts(prev => {
+      const newCounts = { ...prev };
+      delete newCounts[selectedUser.id];
+      return newCounts;
+    });
+
+    // Mark all messages from this user as read
+    if (socket) {
+      socket.emit('mark_all_read', { senderId: selectedUser.id });
+    }
+
     // If clicking the same user, temporarily clear to force refresh
     if (activeDM?.id === selectedUser.id) {
       setActiveDM(null);
@@ -322,6 +355,7 @@ function App() {
         onlineUsers={onlineUsers}
         onUserSelect={handleUserSelect}
         activeDM={activeDM}
+        unreadCounts={unreadCounts}
       />
     </div>
   );
