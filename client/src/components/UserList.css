@@ -1,0 +1,124 @@
+.user-list {
+  background: var(--background-lighter);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border-left: 1px solid var(--border);
+}
+
+.user-list-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-list-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.online-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--background);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.users-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 4px;
+  color: var(--text);
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.user-item:hover {
+  background: var(--background-light);
+}
+
+.user-item.active {
+  background: var(--background-light);
+  color: white;
+}
+
+.user-item-avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.user-item-avatar img,
+.user-item-avatar .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-item-avatar .avatar-placeholder {
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.user-item-avatar .status-indicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--background-lighter);
+}
+
+.user-item-avatar .status-indicator.online {
+  background: var(--online);
+}
+
+.user-item-avatar .status-indicator.offline {
+  background: var(--offline);
+}
+
+.user-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-item-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.95rem;
+}
+
+.user-item-status {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.user-item.active .user-item-status {
+  color: rgba(255, 255, 255, 0.7);
+}

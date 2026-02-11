@@ -1,0 +1,81 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: talks-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-talks_db}
+    ports:
+      - "${DB_PORT:-3308}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - talks-network
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: talks-server
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT:-4000}
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: talks-mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-rootpassword}
+      DB_NAME: ${DB_NAME:-talks_db}
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
+      OAUTH_AUTHORIZATION_URL: ${OAUTH_AUTHORIZATION_URL:-http://host.docker.internal:3000/oauth/authorize}
+      OAUTH_TOKEN_URL: ${OAUTH_TOKEN_URL:-http://host.docker.internal:3000/oauth/token}
+      OAUTH_USERINFO_URL: ${OAUTH_USERINFO_URL:-http://host.docker.internal:3000/oauth/userinfo}
+      OAUTH_REDIRECT_URI: ${OAUTH_REDIRECT_URI:-http://localhost:4000/auth/callback}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5173}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+    ports:
+      - "${PORT:-4000}:4000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - talks-network
+      - konnect-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./server:/app/server
+      - /app/node_modules
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:4000}
+        VITE_WS_URL: ${VITE_WS_URL:-http://localhost:4000}
+    container_name: talks-client
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - server
+    networks:
+      - talks-network
+
+volumes:
+  mysql_data:
+
+networks:
+  talks-network:
+    driver: bridge
+  konnect-network:
+    external: true
+    name: konnect-service_konnect-network
