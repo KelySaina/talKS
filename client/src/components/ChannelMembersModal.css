@@ -1,19 +1,21 @@
+/* Mobile-first: Optimized member list */
 .members-list {
-  padding: 24px;
-  max-height: 60vh;
+  padding: 16px;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
 .loading-text {
   text-align: center;
-  padding: 40px;
+  padding: 40px 20px;
   color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 .users-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .user-card {
@@ -27,13 +29,16 @@
   cursor: pointer;
   transition: all 0.2s;
   text-align: left;
+  min-height: 60px;
 }
 
 .user-card:hover:not(:disabled) {
   background: var(--hover-bg);
   border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.user-card:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .user-card:disabled {
@@ -43,8 +48,8 @@
 
 .user-card-avatar {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
 }
 
@@ -62,7 +67,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: white;
 }
 
@@ -77,12 +82,65 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 0.95rem;
 }
 
 .user-card-username {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+  .members-list {
+    padding: 24px;
+    max-height: 60vh;
+  }
+
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .user-card {
+    min-height: auto;
+  }
+
+  .user-card:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .user-card:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .user-card-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .user-card-avatar .avatar-placeholder {
+    font-size: 1.25rem;
+  }
+
+  .user-card-name {
+    font-size: 1rem;
+  }
+
+  .user-card-username {
+    font-size: 0.875rem;
+  }
+}
+
+/* Desktop: More columns if space allows */
+@media (min-width: 1024px) {
+  .users-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }

@@ -1,37 +1,45 @@
+/* Mobile-first: Optimized for small screens */
 .chat-area {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   background: var(--background);
 }
 
 .chat-header {
-  padding: 15px 20px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
   background: var(--background-lighter);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+}
+
+.chat-header-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .chat-header-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 5px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .invite-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: var(--primary);
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .invite-btn:hover {
@@ -40,19 +48,24 @@
 }
 
 .chat-header-title h2 {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-header-title .channel-icon {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .dm-avatar {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
 
 .dm-avatar img,
@@ -69,22 +82,25 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .chat-header-description {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-top: 5px;
+  font-size: 0.8rem;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .empty-state,
@@ -97,15 +113,17 @@
   height: 100%;
   color: var(--text-muted);
   text-align: center;
+  padding: 20px;
 }
 
 .empty-state h2 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
 }
 
 .message {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   padding: 4px 0;
   transition: background 0.15s ease;
 }
@@ -115,12 +133,12 @@
 }
 
 .message.grouped {
-  padding-left: 52px;
+  padding-left: 42px;
 }
 
 .message-avatar {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
 }
 
@@ -138,7 +156,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
 }
 
 .message-content {
@@ -149,17 +167,19 @@
 .message-header {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 6px;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
 }
 
 .message-username {
   font-weight: 600;
   color: var(--text);
+  font-size: 0.9rem;
 }
 
 .message-time {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
@@ -170,6 +190,7 @@
 .message-text {
   line-height: 1.5;
   word-wrap: break-word;
+  font-size: 0.9rem;
 }
 
 .own-message {
@@ -186,12 +207,12 @@
 .own-message .message-bubble {
   background: var(--primary);
   padding: 8px 12px;
-  border-radius: 12px;
-  max-width: 70%;
+  border-radius: 16px 16px 4px 16px;
+  max-width: 85%;
 }
 
 .message-time-own {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 2px;
 }
@@ -202,7 +223,7 @@
   gap: 5px;
   padding: 8px 0;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-style: italic;
 }
 
@@ -234,20 +255,20 @@
 }
 
 .message-input-container {
-  padding: 20px;
+  padding: 12px;
   background: var(--background-lighter);
   border-top: 1px solid var(--border);
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .message-input {
   flex: 1;
   background: var(--background);
   color: var(--text);
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 10px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
 }
 
 .message-input::placeholder {
@@ -257,19 +278,126 @@
 .send-button {
   background: var(--primary);
   color: white;
-  padding: 12px 16px;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
 }
 
 .send-button:hover:not(:disabled) {
   background: var(--primary-dark);
+  transform: scale(1.05);
 }
 
 .send-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .chat-header {
+    padding: 15px 20px;
+  }
+
+  .chat-header-title h2 {
+    font-size: 1.3rem;
+  }
+
+  .chat-header-title .channel-icon {
+    font-size: 1.5rem;
+  }
+
+  .dm-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dm-avatar .avatar-placeholder {
+    font-size: 0.9rem;
+  }
+
+  .chat-header-description {
+    font-size: 0.9rem;
+  }
+
+  .invite-btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+  }
+
+  .messages-container {
+    padding: 20px;
+    gap: 4px;
+  }
+
+  .message {
+    gap: 12px;
+  }
+
+  .message.grouped {
+    padding-left: 52px;
+  }
+
+  .message-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .message-avatar .avatar-placeholder {
+    font-size: 1.1rem;
+  }
+
+  .message-header {
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .message-username {
+    font-size: 1rem;
+  }
+
+  .message-time {
+    font-size: 0.75rem;
+  }
+
+  .message-text {
+    font-size: 1rem;
+  }
+
+  .own-message .message-bubble {
+    max-width: 70%;
+    border-radius: 18px 18px 4px 18px;
+  }
+
+  .message-time-own {
+    font-size: 0.7rem;
+  }
+
+  .typing-indicator {
+    font-size: 0.9rem;
+  }
+
+  .message-input-container {
+    padding: 20px;
+    gap: 10px;
+  }
+
+  .message-input {
+    padding: 12px 16px;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+
+  .send-button {
+    padding: 12px 16px;
+    border-radius: 8px;
+    width: auto;
+    height: auto;
+  }
 }

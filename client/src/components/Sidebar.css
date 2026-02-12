@@ -1,20 +1,20 @@
+/* Mobile-first: Optimized for small screens */
 .sidebar {
   background: var(--background-lighter);
   display: flex;
   flex-direction: column;
   height: 100vh;
   border-right: 1px solid var(--border);
-}
-
+}\n
 .sidebar-header {
-  padding: 20px;
+  padding: 16px;
   border-bottom: 1px solid var(--border);
 }
 
 .sidebar-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   background: linear-gradient(135deg, var(--primary) 0%, #7289da 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -24,13 +24,14 @@
 .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .user-avatar {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
 }
 
 .user-avatar img,
@@ -47,15 +48,15 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .status-indicator {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: 2px solid var(--background-lighter);
 }
@@ -71,26 +72,27 @@
 
 .user-name {
   font-weight: 600;
+  font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .user-status {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
 .sidebar-section {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 10px;
+  padding: 16px 8px;
 }
 
 .section-header {
-  padding: 0 10px 10px;
+  padding: 0 8px 8px;
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   display: flex;
@@ -99,17 +101,17 @@
 }
 
 .section-header h3 {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }
 
 .add-channel-btn {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 4px;
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -135,11 +137,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
   color: var(--text);
   transition: all 0.15s ease;
   text-align: left;
+  font-size: 0.95rem;
 }
 
 .channel-item:hover {
@@ -148,14 +151,15 @@
 }
 
 .channel-item.active {
-  background: var(--background-light);
+  background: var(--primary);
   color: white;
 }
 
 .channel-icon {
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .channel-item.active .channel-icon {
@@ -170,21 +174,102 @@
 }
 
 .member-count {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   background: var(--background-lighter);
   padding: 2px 6px;
   border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.channel-item.active .member-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .sidebar-footer {
-  padding: 15px;
+  padding: 12px;
   border-top: 1px solid var(--border);
 }
 
 .logout-btn {
   width: 100%;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .sidebar-header {
+    padding: 20px;
+  }
+
+  .sidebar-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .avatar-placeholder {
+    font-size: 1.2rem;
+  }
+
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+
+  .user-status {
+    font-size: 0.85rem;
+  }
+
+  .sidebar-section {
+    padding: 20px 10px;
+  }
+
+  .section-header {
+    padding: 0 10px 10px;
+    font-size: 0.85rem;
+  }
+
+  .section-header h3 {
+    font-size: 0.85rem;
+  }
+
+  .add-channel-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 1.25rem;
+  }
+
+  .channel-item {
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+
+  .channel-icon {
+    font-size: 1.2rem;
+  }
+
+  .member-count {
+    font-size: 0.75rem;
+  }
+
+  .sidebar-footer {
+    padding: 15px;
+  }
+
+  .logout-btn {
+    font-size: 1rem;
+  }
 }

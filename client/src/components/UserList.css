@@ -1,3 +1,4 @@
+/* Mobile-first: Optimized for small screens */
 .user-list {
   background: var(--background-lighter);
   display: flex;
@@ -7,7 +8,7 @@
 }
 
 .user-list-header {
-  padding: 20px;
+  padding: 16px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -15,14 +16,14 @@
 }
 
 .user-list-header h3 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
 .online-count {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   background: var(--background);
   padding: 4px 8px;
@@ -32,7 +33,7 @@
 .users-container {
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -41,9 +42,9 @@
 .user-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 6px;
   color: var(--text);
   transition: all 0.15s ease;
   text-align: left;
@@ -56,7 +57,7 @@
 }
 
 .user-item.active {
-  background: var(--background-light);
+  background: var(--primary);
   color: white;
 }
 
@@ -81,15 +82,15 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .user-item-avatar .status-indicator {
   position: absolute;
   bottom: -2px;
   right: -2px;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: 2px solid var(--background-lighter);
 }
@@ -112,16 +113,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .user-item-status {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
 .user-item.active .user-item-status {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .unread-badge {
@@ -130,7 +131,7 @@
   right: 10px;
   background: var(--primary);
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
   min-width: 18px;
   height: 18px;
@@ -145,4 +146,54 @@
 .user-item.active .unread-badge {
   background: white;
   color: var(--primary);
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .user-list-header {
+    padding: 20px;
+  }
+
+  .user-list-header h3 {
+    font-size: 1rem;
+  }
+
+  .online-count {
+    font-size: 0.85rem;
+  }
+
+  .users-container {
+    padding: 10px;
+  }
+
+  .user-item {
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .user-item-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .user-item-avatar .avatar-placeholder {
+    font-size: 1rem;
+  }
+
+  .user-item-avatar .status-indicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .user-item-name {
+    font-size: 0.95rem;
+  }
+
+  .user-item-status {
+    font-size: 0.8rem;
+  }
+
+  .unread-badge {
+    font-size: 0.7rem;
+  }
 }

@@ -98,6 +98,11 @@ JWT_SECRET=your-super-secret-jwt-key-change-in-production
 
 ### Option A: Docker Deployment (Recommended)
 
+**Features:**
+- Automatic hot reload for client code changes
+- Isolated database and services
+- Easy one-command startup
+
 ```bash
 # Start all services
 npm run docker:up
@@ -111,9 +116,11 @@ npm run docker:down
 
 Services will be available at:
 
-- **Frontend**: http://localhost:5173
+- **Frontend**: http://localhost:5173 (with hot reload enabled)
 - **Backend API**: http://localhost:4000
 - **MySQL**: localhost:3308
+
+**Note**: The client runs in development mode with volume mounting, so any changes to files in the `client/` directory will automatically trigger a hot reload in your browser.
 
 ### Option B: Local Development
 

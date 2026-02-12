@@ -2,10 +2,10 @@ import { useState } from 'react';
 import CreateChannelModal from './CreateChannelModal';
 import './Sidebar.css';
 
-function Sidebar({ channels, activeChannel, onChannelSelect, onLogout, user, onChannelCreated }) {
+function Sidebar({ channels, activeChannel, onChannelSelect, onLogout, user, onChannelCreated, className = '' }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${className}`}>
       <div className="sidebar-header">
         <h2 className="sidebar-title">talKS</h2>
         <div className="user-info">

@@ -6,14 +6,25 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    watch: {
+      usePolling: true,
+    },
     proxy: {
+      '/socket.io': {
+        target: 'http://talks-server:4000',
+        changeOrigin: true,
+        secure: false,
+        ws: true
+      },
       '/auth': {
-        target: process.env.VITE_API_URL || 'http://localhost:4000',
-        changeOrigin: true
+        target: 'http://talks-server:4000',
+        changeOrigin: true,
+        secure: false
       },
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:4000',
-        changeOrigin: true
+        target: 'http://talks-server:4000',
+        changeOrigin: true,
+        secure: false
       }
     }
   }

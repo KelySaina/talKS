@@ -1,6 +1,6 @@
 import './UserList.css';
 
-function UserList({ users, onlineUsers, onUserSelect, activeDM, unreadCounts = {} }) {
+function UserList({ users, onlineUsers, onUserSelect, activeDM, unreadCounts = {}, className = '' }) {
   const sortedUsers = [...users].sort((a, b) => {
     // Online users first
     const aOnline = onlineUsers.includes(a.id) || a.is_online;
@@ -14,7 +14,7 @@ function UserList({ users, onlineUsers, onUserSelect, activeDM, unreadCounts = {
   });
 
   return (
-    <div className="user-list">
+    <div className={`user-list ${className}`}>
       <div className="user-list-header">
         <h3>Users</h3>
         <span className="online-count">

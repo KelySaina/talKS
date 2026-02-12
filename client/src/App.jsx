@@ -7,7 +7,8 @@ import ChatArea from './components/ChatArea';
 import UserList from './components/UserList';
 import './App.css';
 
-const SOCKET_URL = import.meta.env.VITE_WS_URL || 'http://localhost:4000';
+// Use window.location.origin to connect to the same host as the client
+const SOCKET_URL = window.location.origin;
 
 function App() {
   const [user, setUser] = useState(null);
@@ -21,6 +22,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState({});
   const [unreadCounts, setUnreadCounts] = useState({});
+  const [mobileView, setMobileView] = useState('chat'); // 'channels', 'chat', 'users'
 
   // Check authentication
   useEffect(() => {
@@ -32,11 +34,13 @@ function App() {
     if (user && !socket) {
       const newSocket = io(SOCKET_URL, {
         withCredentials: true,
-        transports: ['websocket', 'polling']
+        transports: ['polling'],
+        path: '/socket.io',
+        upgrade: false
       });
 
       newSocket.on('connect', () => {
-        console.log('✅ Connected to WebSocket');
+        console.log('✅ Connected to Socket.IO');
       });
 
       newSocket.on('connect_error', (error) => {
@@ -65,22 +69,30 @@ function App() {
         }
       });
 
-      newSocket.on('user_online', async ({ userId, username }) => {
+      newSocket.on('user_online', ({ userId, username }) => {
         setOnlineUsers(prev => [...new Set([...prev, userId])]);
         setUsers(prev => {
           const userExists = prev.some(u => u.id === userId);
-          if (!userExists) {
-            // User not in list, fetch and add them
-            usersAPI.getById(userId)
-              .then(({ data }) => {
-                setUsers(prevUsers => [...prevUsers, { ...data, is_online: true }]);
-              })
-              .catch(err => console.error('Failed to fetch user:', err));
-            return prev;
+          if (userExists) {
+            return prev.map(u =>
+              u.id === userId ? { ...u, is_online: true } : u
+            );
           }
-          return prev.map(u =>
-            u.id === userId ? { ...u, is_online: true } : u
-          );
+          // User not in list, fetch and add them with online status
+          usersAPI.getById(userId)
+            .then(({ data }) => {
+              setUsers(prevUsers => {
+                // Check again if user was added in the meantime
+                if (prevUsers.some(u => u.id === userId)) {
+                  return prevUsers.map(u =>
+                    u.id === userId ? { ...u, is_online: true } : u
+                  );
+                }
+                return [...prevUsers, { ...data, is_online: true }];
+              });
+            })
+            .catch(err => console.error('Failed to fetch user:', err));
+          return prev;
         });
       });
 
@@ -93,6 +105,10 @@ function App() {
 
       newSocket.on('online_users', (userIds) => {
         setOnlineUsers(userIds);
+        setUsers(prev => prev.map(u => ({
+          ...u,
+          is_online: userIds.includes(u.id)
+        })));
       });
 
       newSocket.on('typing', ({ userId, username, channelId, isDirect }) => {
@@ -233,6 +249,8 @@ function App() {
         socket.emit('join_channel', { channelId: channel.id });
       }
     }
+    // Switch to chat view on mobile
+    setMobileView('chat');
   };
 
   const handleUserSelect = (selectedUser) => {
@@ -261,6 +279,8 @@ function App() {
       setActiveChannel(null);
       setMessages([]);
     }
+    // Switch to chat view on mobile
+    setMobileView('chat');
   };
 
   const handleSendMessage = (content) => {
@@ -331,6 +351,12 @@ function App() {
 
   return (
     <div className="app">
+      {/* Mobile overlay */}
+      <div
+        className={`mobile-overlay ${mobileView !== 'chat' ? 'show' : ''}`}
+        onClick={() => setMobileView('chat')}
+      />
+
       <Sidebar
         channels={channels}
         activeChannel={activeChannel}
@@ -338,6 +364,7 @@ function App() {
         onLogout={handleLogout}
         user={user}
         onChannelCreated={handleChannelCreated}
+        className={mobileView === 'channels' ? 'mobile-open' : ''}
       />
       <ChatArea
         activeChannel={activeChannel}
@@ -356,7 +383,33 @@ function App() {
         onUserSelect={handleUserSelect}
         activeDM={activeDM}
         unreadCounts={unreadCounts}
+        className={mobileView === 'users' ? 'mobile-open' : ''}
       />
+
+      {/* Mobile navigation */}
+      <nav className="mobile-nav">
+        <button
+          className={`mobile-nav-btn ${mobileView === 'channels' ? 'active' : ''}`}
+          onClick={() => setMobileView(mobileView === 'channels' ? 'chat' : 'channels')}
+        >
+          <span className="mobile-nav-icon">#</span>
+          <span>Channels</span>
+        </button>
+        <button
+          className={`mobile-nav-btn ${mobileView === 'chat' ? 'active' : ''}`}
+          onClick={() => setMobileView('chat')}
+        >
+          <span className="mobile-nav-icon">💬</span>
+          <span>Chat</span>
+        </button>
+        <button
+          className={`mobile-nav-btn ${mobileView === 'users' ? 'active' : ''}`}
+          onClick={() => setMobileView(mobileView === 'users' ? 'chat' : 'users')}
+        >
+          <span className="mobile-nav-icon">👥</span>
+          <span>Users</span>
+        </button>
+      </nav>
     </div>
   );
 }
