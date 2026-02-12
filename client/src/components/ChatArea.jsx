@@ -19,6 +19,7 @@ function ChatArea({
   const [showMembersModal, setShowMembersModal] = useState(false);
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     if (activeChannel || activeDM) {
@@ -59,6 +60,12 @@ function ChatArea({
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
 
+    // Auto-resize textarea
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
+    }
+
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
@@ -70,6 +77,13 @@ function ChatArea({
     }, 2000);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (inputValue.trim()) {
@@ -78,6 +92,10 @@ function ChatArea({
       onTyping(false);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+      }
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
       }
     }
   };
@@ -202,12 +220,14 @@ function ChatArea({
       </div>
 
       <form className="message-input-container" onSubmit={handleSubmit}>
-        <input
-          type="text"
+        <textarea
+          ref={textareaRef}
           className="message-input"
           placeholder={`Message ${activeChannel ? '#' + activeChannel.name : activeDM?.username}`}
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          rows={1}
           autoFocus
         />
         <button type="submit" className="send-button" disabled={!inputValue.trim()}>
